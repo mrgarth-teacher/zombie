@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My page title</title>
+    <style>
+#zombie_map {
+    height: 100%;
+    width: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    background-color: grey;
+}
+</style>
+  </head>
+    <script
+    async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmDHcTqk6fpNTgyU5Tey_ikTsoyTcnGl4&callback=initMap"
+  ></script>
+  <body>
+    My zombie map
+<div id="zombie_map"></div>
+    <script>
+    var zombie_map;
+    var all_markers=[];
+    var data = `-37.67143167629509 145.02844369311524 https://cdn.glitch.global/fc3a5f45-0214-43fd-ba2a-2e0bd9dbce2f/zombie.png?v=1659486545789
+    -37.672178984186694 145.02854025263977 https://cdn.glitch.global/fc3a5f45-0214-43fd-ba2a-2e0bd9dbce2f/zombie.png?v=1659486545789
+    -37.67133826227949 145.0291410674591 https://cdn.glitch.global/fc3a5f45-0214-43fd-ba2a-2e0bd9dbce2f/hospital.png?v=1659486535213`;
+    var markers = data.split("\n");
+      
+    function initMap() {
+            zombie_map = new google.maps.Map(document.getElementById('zombie_map'), {
+            zoom: 17,
+            center: { lat: -37.672162, lng: 145.029302 }
+        });
+      
+      if(navigator.geolocation) {
+        navigator.geolocation.watchPosition(set_my_position);
+      }
+      else {
+        alert("Geolocation doesn't work in your browser");
+        console.log('issue with geo on phone')
+      }
+      
+      for (var i=0; i < markers.length; i++) {
+        var marker_data = markers[i].trim();
+        marker_data = marker_data.split(" ");
+        var latitude = marker_data[0];
+        console.log(latitude)
+        var longitude = marker_data[1];
+        console.log(longitude)
+        var emoji = marker_data[2];
+        console.log(emoji)
+        var marker_position = new google.maps.LatLng(latitude, longitude);
+        
+        var marker = new google.maps.Marker({
+          position: marker_position,
+          map: zombie_map,
+          icon: emoji
+          });
+        all_markers.push(marker);
+      }
+    }
+      
+    function set_my_position(position) {
+      console.log(position.coords.latitude,position.coords.longitude);
+      var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      var player_emoji = "https://cdn.glitch.global/7aa0d2ef-d063-42ad-87de-86cf4db6de0a/player.png?v=1659571395440"
+      var marker = new google.maps.Marker({
+          position: pos,
+          map: zombie_map,
+          icon: player_emoji
+          });
+      
+    }
+</script>
+  </body>
+</html>
